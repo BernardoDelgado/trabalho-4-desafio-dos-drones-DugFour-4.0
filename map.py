@@ -14,15 +14,17 @@ class Map:
             'unsafe': [], 
             'notvisited': self.setNotVisitedPositions(),  # its length decreases as the bot explores the map and must contain all the positions that have not been visited
             'visited': [],  # its length increases as the bot explores the map and must contain all the positions that have been visited
-            # 'auxGold': []  # it increases as the bot finds gold and catches it
+            'auxGold': []  # it increases as the bot finds gold and catches it
         }
-        self.map_training_server = 'atari.icad.puc-rio.br'
-        # self.map_server = ''
+
         return
 
     # GET methods
     def getGoldPositions(self):
         return self.saved_positions['gold']
+    
+    def getAuxGoldPositions(self):
+        return self.saved_positions['auxGold']
     
     def getVoidPositions(self):  
         return self.saved_positions['void']

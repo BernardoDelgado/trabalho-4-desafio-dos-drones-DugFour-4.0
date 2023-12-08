@@ -32,8 +32,8 @@ import datetime
 class Bot():
 
     #Descomente para escolher uma cor
-    #botcolor = (255,0,0)  # BOT COLOR
-    name = "Sabao" # BOT NAME
+    botcolor = (255,0,0)  # BOT COLOR
+    name = "SaBot" # BOT NAME
     host = "atari.icad.puc-rio.br" # SERVER
 
     client = None
