@@ -1,4 +1,4 @@
-from positions import Position
+from Map.Position import Position
 
 class Map:
 
@@ -6,18 +6,19 @@ class Map:
         self.width = 34
         self.heigth = 59
         self.saved_positions = {
-            'gold': [], 
+            'gold': [], # its length increases as the bot finds gold and saves its position
             'void': [], 
             'powerup': [], 
             'blocked': [], 
             'safe': [], 
             'unsafe': [], 
-            'notvisited': []
+            'notvisited': self.setNotVisitedPositions(),  # its length decreases as the bot explores the map and must contain all the positions that have not been visited
+            'visited': [],  # its length increases as the bot explores the map and must contain all the positions that have been visited
+            # 'auxGold': []  # it increases as the bot finds gold and catches it
         }
-
-    # Calculates the distance between two points
-    def distance_manhattan(self,x1,y1,x2,y2):
-        return abs(x1-x2)+abs(y1-y2)
+        self.map_training_server = 'atari.icad.puc-rio.br'
+        # self.map_server = ''
+        return
 
     # GET methods
     def getGoldPositions(self):
@@ -41,23 +42,53 @@ class Map:
     def getNotVisitedPositions(self):
         return self.saved_positions['notvisited']
     
+    def getVisitedPositions(self):
+        return self.saved_positions['visited']
+
+    # SET methods
+    def setNotVisitedPositions(self):
+        self.saved_positions['notvisited'] = []
+        for i in range(self.width):
+            for j in range(self.heigth):
+                position = Position.getPosition(i, j)
+                self.saved_positions['notvisited'].append(position)
+        return self.saved_positions['notvisited']
+    
     # Updates the dict with the positions
     def update_map(self, map):
         for i in range(self.width):
             for j in range(self.heigth):
+                position = Position.getPosition(i, j)
+
                 if map[i][j] == 'G':
-                    self.saved_positions['gold'].append(Position(i, j))
+                    self.saved_positions['gold'].append(position)
+                    self.saved_positions['visited'].append(position)
+                    self.saved_positions['notvisited'].remove(position)
                 elif map[i][j] == 'V':
-                    self.saved_positions['void'].append(Position(i, j))
+                    self.saved_positions['void'].append(position)
+                    self.saved_positions['visited'].append(position)
+                    self.saved_positions['notvisited'].remove(position)
                 elif map[i][j] == 'P':
-                    self.saved_positions['powerup'].append(Position(i, j))
+                    self.saved_positions['powerup'].append(position)
+                    self.saved_positions['visited'].append(position)
+                    self.saved_positions['notvisited'].remove(position)
                 elif map[i][j] == 'B':
-                    self.saved_positions['blocked'].append(Position(i, j))
+                    self.saved_positions['blocked'].append(position)
+                    self.saved_positions['visited'].append(position)
+                    self.saved_positions['notvisited'].remove(position)
                 elif map[i][j] == 'S':
-                    self.saved_positions['safe'].append(Position(i, j))
+                    self.saved_positions['safe'].append(position)
+                    self.saved_positions['visited'].append(position)
+                    self.saved_positions['notvisited'].remove(position)
                 elif map[i][j] == 'U':
-                    self.saved_positions['unsafe'].append(Position(i, j))
-                elif map[i][j] == 'N':
-                    self.saved_positions['notvisited'].append(Position(i, j))
+                    self.saved_positions['unsafe'].append(position)
+                    self.saved_positions['visited'].append(position)
+                    self.saved_positions['notvisited'].remove(position)
                 else:
                     pass
+        return
+
+    # Calculates the distance between two points
+    def distance_manhattan(self,x1,y1,x2,y2):
+        return abs(x1-x2)+abs(y1-y2)
+    
